@@ -65,7 +65,7 @@
                     </div>
                 </div>
                 <div class="flex items-center">
-                    <button class="p-2 rounded-md text-gray-500 hover:text-primary focus:outline-none">
+                    <button id="help-btn" class="p-2 rounded-md text-gray-500 hover:text-primary focus:outline-none" title="帮助 (按F1)">
                         <i class="fa-solid fa-question-circle"></i>
                     </button>
                     <button class="ml-4 p-2 rounded-md text-gray-500 hover:text-primary focus:outline-none">
@@ -375,6 +375,97 @@
         </button>
     </div>
 
+    <!-- 帮助模态框 -->
+    <div id="help-modal" class="fixed inset-0 bg-gray-600 bg-opacity-50 overflow-y-auto h-full w-full z-50 hidden">
+        <div class="relative top-20 mx-auto p-5 border w-11/12 md:w-3/4 lg:w-1/2 shadow-lg rounded-md bg-white">
+            <div class="mt-3">
+                <div class="flex items-center justify-between mb-4">
+                    <h3 class="text-lg font-semibold text-gray-900 flex items-center">
+                        <i class="fa-solid fa-question-circle text-primary mr-2"></i>
+                        使用帮助
+                    </h3>
+                    <button id="close-help" class="text-gray-400 hover:text-gray-600">
+                        <i class="fa-solid fa-times text-xl"></i>
+                    </button>
+                </div>
+                
+                <div class="space-y-6 max-h-96 overflow-y-auto">
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2 flex items-center">
+                            <i class="fa-solid fa-upload text-primary mr-2"></i>
+                            上传数据
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1 ml-6">
+                            <li>• 支持 Excel (.xlsx, .xls) 和 CSV 文件</li>
+                            <li>• 文件大小限制：10MB</li>
+                            <li>• 第一行应为表头（列名）</li>
+                            <li>• 拖拽文件到上传区域或点击浏览</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2 flex items-center">
+                            <i class="fa-solid fa-chart-bar text-primary mr-2"></i>
+                            创建图表
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1 ml-6">
+                            <li>• 选择图表类型（柱状图、折线图、饼图等）</li>
+                            <li>• 设置X轴（类别）和Y轴（数值）数据列</li>
+                            <li>• 自定义图表标题和颜色主题</li>
+                            <li>• 设置图例和网格线显示</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2 flex items-center">
+                            <i class="fa-solid fa-download text-primary mr-2"></i>
+                            导出图表
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1 ml-6">
+                            <li>• 支持 PNG、JPG 格式导出</li>
+                            <li>• 自定义导出尺寸和文件名</li>
+                            <li>• 选择透明或白色背景</li>
+                            <li>• SVG 和 PDF 格式需要额外库支持</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2 flex items-center">
+                            <i class="fa-solid fa-keyboard text-primary mr-2"></i>
+                            快捷键
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1 ml-6">
+                            <li>• <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">Ctrl/Cmd + U</kbd> 上传文件</li>
+                            <li>• <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">Ctrl/Cmd + G</kbd> 生成图表</li>
+                            <li>• <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">Ctrl/Cmd + E</kbd> 导出图表</li>
+                            <li>• <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">F1</kbd> 显示帮助</li>
+                            <li>• <kbd class="px-2 py-1 bg-gray-200 rounded text-xs">ESC</kbd> 关闭通知</li>
+                        </ul>
+                    </div>
+                    
+                    <div>
+                        <h4 class="font-medium text-gray-900 mb-2 flex items-center">
+                            <i class="fa-solid fa-lightbulb text-primary mr-2"></i>
+                            使用技巧
+                        </h4>
+                        <ul class="text-sm text-gray-600 space-y-1 ml-6">
+                            <li>• 数据会自动保存在浏览器中</li>
+                            <li>• 支持离线使用</li>
+                            <li>• 图表会自动适应屏幕大小</li>
+                            <li>• 鼠标悬停查看详细数据</li>
+                        </ul>
+                    </div>
+                </div>
+                
+                <div class="flex justify-end mt-6 pt-4 border-t">
+                    <button id="close-help-btn" class="px-4 py-2 bg-primary text-white rounded-md hover:bg-primary/90 transition-colors duration-200">
+                        知道了
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script>
         // 全局变量
         let data = null;
@@ -414,6 +505,10 @@
         const notification = document.getElementById('notification');
         const notificationMessage = document.getElementById('notification-message');
         const notificationIcon = document.getElementById('notification-icon');
+        const helpBtn = document.getElementById('help-btn');
+        const helpModal = document.getElementById('help-modal');
+        const closeHelp = document.getElementById('close-help');
+        const closeHelpBtn = document.getElementById('close-help-btn');
         
         // 导航栏滚动效果
         window.addEventListener('scroll', () => {
@@ -473,25 +568,14 @@
         
         // 处理文件上传
         function handleFile(file) {
+            // 验证文件
+            if (!validateFile(file)) {
+                return;
+            }
+            
             // 显示上传进度
             uploadProgress.classList.remove('hidden');
             simulateProgress();
-            
-            // 验证文件类型
-            const fileTypes = [
-                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-                'application/vnd.ms-excel',
-                'text/csv'
-            ];
-            
-            if (!fileTypes.includes(file.type) && 
-                !file.name.endsWith('.xlsx') && 
-                !file.name.endsWith('.xls') && 
-                !file.name.endsWith('.csv')) {
-                showNotification('错误', '请上传Excel或CSV文件', 'error');
-                uploadProgress.classList.add('hidden');
-                return;
-            }
             
             // 读取文件
             const reader = new FileReader();
@@ -499,23 +583,39 @@
             reader.onload = function(e) {
                 try {
                     // 处理Excel文件
-                    if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
+                    if (file.name.toLowerCase().endsWith('.xlsx') || file.name.toLowerCase().endsWith('.xls')) {
                         const workbook = XLSX.read(e.target.result, { type: 'binary' });
+                        
+                        // 检查是否有工作表
+                        if (!workbook.SheetNames || workbook.SheetNames.length === 0) {
+                            throw new Error('Excel文件中没有找到工作表');
+                        }
+                        
                         const firstSheetName = workbook.SheetNames[0];
                         const worksheet = workbook.Sheets[firstSheetName];
-                        data = XLSX.utils.sheet_to_json(worksheet, { header: 1 });
+                        
+                        // 检查工作表是否为空
+                        if (!worksheet) {
+                            throw new Error('工作表为空');
+                        }
+                        
+                        data = XLSX.utils.sheet_to_json(worksheet, { header: 1, defval: '' });
                     } 
                     // 处理CSV文件
-                    else if (file.name.endsWith('.csv')) {
+                    else if (file.name.toLowerCase().endsWith('.csv')) {
                         const text = e.target.result;
-                        const lines = text.split('\n');
-                        data = lines.map(line => line.split(','));
+                        
+                        // 检查文件是否为空
+                        if (!text || text.trim().length === 0) {
+                            throw new Error('CSV文件为空');
+                        }
+                        
+                        // 更智能的CSV解析，处理引号和逗号
+                        data = parseCSV(text);
                     }
                     
-                    // 检查数据是否有效
-                    if (!data || data.length <= 1) {
-                        showNotification('错误', '文件中没有足够的数据', 'error');
-                        uploadProgress.classList.add('hidden');
+                    // 数据验证和清理
+                    if (!validateAndCleanData()) {
                         return;
                     }
                     
@@ -539,14 +639,17 @@
                     showNotification('成功', '文件上传成功', 'success');
                 } catch (error) {
                     console.error('Error processing file:', error);
-                    showNotification('错误', '处理文件时出错', 'error');
+                    const errorMessage = error.message || '处理文件时出错';
+                    showNotification('错误', errorMessage, 'error');
                     uploadProgress.classList.add('hidden');
+                    resetFileInput();
                 }
             };
             
             reader.onerror = function() {
-                showNotification('错误', '读取文件时出错', 'error');
+                showNotification('错误', '读取文件时出错，请检查文件是否损坏', 'error');
                 uploadProgress.classList.add('hidden');
+                resetFileInput();
             };
             
             if (file.name.endsWith('.xlsx') || file.name.endsWith('.xls')) {
@@ -554,6 +657,46 @@
             } else {
                 reader.readAsText(file);
             }
+        }
+        
+        // 文件验证函数
+        function validateFile(file) {
+            // 检查文件是否存在
+            if (!file) {
+                showNotification('错误', '未选择文件', 'error');
+                return false;
+            }
+            
+            // 检查文件大小（限制为10MB）
+            const maxSize = 10 * 1024 * 1024; // 10MB
+            if (file.size > maxSize) {
+                showNotification('错误', '文件大小不能超过10MB', 'error');
+                return false;
+            }
+            
+            // 检查文件类型
+            const allowedTypes = [
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.ms-excel',
+                'text/csv',
+                'application/csv'
+            ];
+            
+            const allowedExtensions = ['.xlsx', '.xls', '.csv'];
+            const fileExtension = file.name.toLowerCase().substring(file.name.lastIndexOf('.'));
+            
+            if (!allowedTypes.includes(file.type) && !allowedExtensions.includes(fileExtension)) {
+                showNotification('错误', '仅支持Excel (.xlsx, .xls) 和CSV (.csv) 文件', 'error');
+                return false;
+            }
+            
+            // 检查文件名
+            if (file.name.length > 255) {
+                showNotification('错误', '文件名过长', 'error');
+                return false;
+            }
+            
+            return true;
         }
         
         // 模拟上传进度
@@ -580,6 +723,128 @@
             const i = Math.floor(Math.log(bytes) / Math.log(k));
             
             return parseFloat((bytes / Math.pow(k, i)).toFixed(2)) + ' ' + sizes[i];
+        }
+        
+        // CSV解析函数，处理引号和逗号
+        function parseCSV(text) {
+            const lines = text.split('\n');
+            const result = [];
+            
+            for (let line of lines) {
+                line = line.trim();
+                if (line.length === 0) continue; // 跳过空行
+                
+                const row = [];
+                let current = '';
+                let inQuotes = false;
+                let i = 0;
+                
+                while (i < line.length) {
+                    const char = line[i];
+                    
+                    if (char === '"') {
+                        if (inQuotes && line[i + 1] === '"') {
+                            // 双引号转义
+                            current += '"';
+                            i += 2;
+                        } else {
+                            // 切换引号状态
+                            inQuotes = !inQuotes;
+                            i++;
+                        }
+                    } else if (char === ',' && !inQuotes) {
+                        // 字段分隔符
+                        row.push(current.trim());
+                        current = '';
+                        i++;
+                    } else {
+                        current += char;
+                        i++;
+                    }
+                }
+                
+                // 添加最后一个字段
+                row.push(current.trim());
+                result.push(row);
+            }
+            
+            return result;
+        }
+        
+        // 数据验证和清理函数
+        function validateAndCleanData() {
+            if (!data || data.length === 0) {
+                showNotification('错误', '文件中没有数据', 'error');
+                uploadProgress.classList.add('hidden');
+                resetFileInput();
+                return false;
+            }
+            
+            // 过滤空行
+            data = data.filter(row => row && row.some(cell => cell !== null && cell !== undefined && cell.toString().trim() !== ''));
+            
+            if (data.length <= 1) {
+                showNotification('错误', '文件中没有足够的数据行（至少需要表头和一行数据）', 'error');
+                uploadProgress.classList.add('hidden');
+                resetFileInput();
+                return false;
+            }
+            
+            // 检查表头
+            const header = data[0];
+            if (!header || header.length === 0) {
+                showNotification('错误', '文件缺少表头', 'error');
+                uploadProgress.classList.add('hidden');
+                resetFileInput();
+                return false;
+            }
+            
+            // 检查是否有重复的列名
+            const uniqueHeaders = [...new Set(header.filter(h => h && h.toString().trim() !== ''))];
+            if (uniqueHeaders.length !== header.filter(h => h && h.toString().trim() !== '').length) {
+                showNotification('警告', '检测到重复的列名，可能影响图表生成', 'warning');
+            }
+            
+            // 统一数据格式
+            data = data.map(row => {
+                return row.map(cell => {
+                    if (cell === null || cell === undefined) return '';
+                    return cell.toString().trim();
+                });
+            });
+            
+            // 检查数据行长度一致性
+            const headerLength = data[0].length;
+            let inconsistentRows = 0;
+            
+            for (let i = 1; i < data.length; i++) {
+                if (data[i].length !== headerLength) {
+                    inconsistentRows++;
+                    // 补齐或截断行数据
+                    while (data[i].length < headerLength) {
+                        data[i].push('');
+                    }
+                    if (data[i].length > headerLength) {
+                        data[i] = data[i].slice(0, headerLength);
+                    }
+                }
+            }
+            
+            if (inconsistentRows > 0) {
+                showNotification('警告', `已自动修复 ${inconsistentRows} 行数据格式不一致的问题`, 'warning');
+            }
+            
+            return true;
+        }
+        
+        // 重置文件输入
+        function resetFileInput() {
+            fileInput.value = '';
+            data = null;
+            fileInfo.classList.add('hidden');
+            dataPreview.classList.add('hidden');
+            xAxisSelect.innerHTML = '<option value="">请选择...</option>';
+            yAxisSelect.innerHTML = '<option value="">请选择...</option>';
         }
         
         // 填充表格预览
@@ -697,51 +962,121 @@
         
         // 生成图表
         generateChart.addEventListener('click', () => {
-            if (!data) {
-                showNotification('错误', '请先上传数据文件', 'error');
-                return;
+            try {
+                if (!data) {
+                    showNotification('错误', '请先上传数据文件', 'error');
+                    return;
+                }
+                
+                const xAxisIndex = parseInt(xAxisSelect.value);
+                const yAxisIndex = parseInt(yAxisSelect.value);
+                
+                if (isNaN(xAxisIndex) || isNaN(yAxisIndex)) {
+                    showNotification('错误', '请选择X轴和Y轴数据列', 'error');
+                    return;
+                }
+                
+                if (xAxisIndex === yAxisIndex) {
+                    showNotification('错误', 'X轴和Y轴不能选择同一列', 'error');
+                    return;
+                }
+                
+                // 验证列索引
+                if (xAxisIndex >= data[0].length || yAxisIndex >= data[0].length) {
+                    showNotification('错误', '选择的列索引超出范围', 'error');
+                    return;
+                }
+                
+                // 获取选中的图表类型
+                let chartType = 'bar';
+                const selectedChartType = document.querySelector('.chart-type-option.bg-primary\\/10');
+                if (selectedChartType) {
+                    chartType = selectedChartType.dataset.type;
+                }
+                
+                // 准备图表数据
+                const chartData = prepareChartData(xAxisIndex, yAxisIndex, chartType);
+                
+                if (!chartData) {
+                    return; // 错误已在prepareChartData中处理
+                }
+                
+                // 创建图表
+                createChart(chartType, chartData);
+                
+            } catch (error) {
+                console.error('生成图表时出错:', error);
+                showNotification('错误', '生成图表时出现未知错误', 'error');
             }
-            
-            const xAxisIndex = parseInt(xAxisSelect.value);
-            const yAxisIndex = parseInt(yAxisSelect.value);
-            
-            if (isNaN(xAxisIndex) || isNaN(yAxisIndex)) {
-                showNotification('错误', '请选择X轴和Y轴数据列', 'error');
-                return;
-            }
-            
-            if (xAxisIndex === yAxisIndex) {
-                showNotification('错误', 'X轴和Y轴不能选择同一列', 'error');
-                return;
-            }
-            
-            // 准备图表数据
+        });
+        
+        // 准备图表数据
+        function prepareChartData(xAxisIndex, yAxisIndex, chartType) {
             const labels = [];
             const values = [];
+            let numericValues = 0;
+            let totalValues = 0;
             
             // 从第2行开始，因为第1行是表头
             for (let i = 1; i < data.length; i++) {
-                // 跳过空行
-                if (!data[i][xAxisIndex] || !data[i][yAxisIndex]) continue;
+                const xValue = data[i][xAxisIndex];
+                const yValue = data[i][yAxisIndex];
                 
-                labels.push(data[i][xAxisIndex]);
+                // 跳过完全空的行
+                if (!xValue && !yValue) continue;
                 
-                // 尝试转换为数字
-                const value = parseFloat(data[i][yAxisIndex]);
-                values.push(isNaN(value) ? data[i][yAxisIndex] : value);
+                // 处理X轴标签
+                const label = xValue ? xValue.toString().trim() : `行${i}`;
+                labels.push(label);
+                
+                // 处理Y轴数值
+                if (yValue === null || yValue === undefined || yValue === '') {
+                    values.push(0);
+                } else {
+                    const numValue = parseFloat(yValue);
+                    if (!isNaN(numValue)) {
+                        values.push(numValue);
+                        numericValues++;
+                    } else {
+                        // 对于非数值，尝试转换或使用默认值
+                        if (chartType === 'pie' || chartType === 'doughnut') {
+                            values.push(1); // 饼图默认值为1
+                        } else {
+                            values.push(0);
+                        }
+                    }
+                }
+                totalValues++;
             }
             
             if (labels.length === 0 || values.length === 0) {
                 showNotification('错误', '所选列中没有有效数据', 'error');
-                return;
+                return null;
             }
             
-            // 获取选中的图表类型
-            let chartType = 'bar';
-            const selectedChartType = document.querySelector('.chart-type-option.bg-primary\\/10');
-            if (selectedChartType) {
-                chartType = selectedChartType.dataset.type;
+            // 数据质量检查
+            if (numericValues === 0 && (chartType === 'bar' || chartType === 'line')) {
+                showNotification('警告', 'Y轴数据中没有数值，将使用默认值', 'warning');
+            } else if (numericValues < totalValues * 0.5) {
+                showNotification('警告', 'Y轴数据中数值较少，图表可能不够准确', 'warning');
             }
+            
+            // 限制数据点数量以提高性能
+            const maxDataPoints = 100;
+            if (labels.length > maxDataPoints) {
+                showNotification('警告', `数据点过多，仅显示前${maxDataPoints}个数据点`, 'warning');
+                return {
+                    labels: labels.slice(0, maxDataPoints),
+                    values: values.slice(0, maxDataPoints)
+                };
+            }
+            
+            return { labels, values };
+        }
+        
+        // 创建图表
+        function createChart(chartType, chartData) {
+            const { labels, values } = chartData;
             
             // 准备图表配置
             const config = {
@@ -846,7 +1181,7 @@
             noChartMessage.classList.add('hidden');
             
             showNotification('成功', '图表生成成功', 'success');
-        });
+        }
         
         // 根据主题获取颜色
         function getThemeColors(count) {
@@ -984,6 +1319,9 @@
             } else if (type === 'info') {
                 notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-0 opacity-100 z-50 flex items-center bg-blue-50 text-blue-800 border-l-4 border-blue-400';
                 notificationIcon.className = 'fa-solid fa-info-circle text-blue-500 mr-2';
+            } else if (type === 'warning') {
+                notification.className = 'fixed top-4 right-4 p-4 rounded-lg shadow-lg transform transition-all duration-300 translate-x-0 opacity-100 z-50 flex items-center bg-yellow-50 text-yellow-800 border-l-4 border-yellow-400';
+                notificationIcon.className = 'fa-solid fa-exclamation-triangle text-yellow-500 mr-2';
             }
             
             // 显示通知
@@ -1034,6 +1372,166 @@
                     });
                 }
             });
+        });
+        
+        // 键盘快捷键
+        document.addEventListener('keydown', function(e) {
+            // Ctrl/Cmd + G: 生成图表
+            if ((e.ctrlKey || e.metaKey) && e.key === 'g') {
+                e.preventDefault();
+                if (data) {
+                    generateChart.click();
+                }
+            }
+            
+            // Ctrl/Cmd + E: 导出图表
+            if ((e.ctrlKey || e.metaKey) && e.key === 'e') {
+                e.preventDefault();
+                if (chart) {
+                    exportChart.click();
+                }
+            }
+            
+            // Ctrl/Cmd + U: 上传文件
+            if ((e.ctrlKey || e.metaKey) && e.key === 'u') {
+                e.preventDefault();
+                fileInput.click();
+            }
+            
+            // ESC: 关闭通知或模态框
+            if (e.key === 'Escape') {
+                notification.style.transform = 'translateX(calc(100% + 1rem))';
+                notification.style.opacity = '0';
+                helpModal.classList.add('hidden');
+            }
+            
+            // F1: 显示帮助
+            if (e.key === 'F1') {
+                e.preventDefault();
+                helpModal.classList.remove('hidden');
+            }
+        });
+        
+        // 防抖函数
+        function debounce(func, wait) {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        }
+        
+        // 自动保存用户设置
+        function saveUserSettings() {
+            const settings = {
+                theme: selectedTheme,
+                showLegend: showLegend.checked,
+                showGrid: showGrid.checked,
+                chartTitle: chartTitle.value,
+                exportFilename: exportFilename.value,
+                exportWidth: exportWidth.value,
+                exportHeight: exportHeight.value,
+                background: bgWhite.checked ? 'white' : 'transparent'
+            };
+            
+            try {
+                localStorage.setItem('dataviz-settings', JSON.stringify(settings));
+            } catch (error) {
+                console.warn('无法保存用户设置:', error);
+            }
+        }
+        
+        // 加载用户设置
+        function loadUserSettings() {
+            try {
+                const savedSettings = localStorage.getItem('dataviz-settings');
+                if (savedSettings) {
+                    const settings = JSON.parse(savedSettings);
+                    
+                    // 恢复主题
+                    if (settings.theme) {
+                        selectedTheme = settings.theme;
+                        document.querySelectorAll('.theme-btn').forEach(btn => {
+                            btn.classList.remove('ring-2', 'ring-offset-2', 'ring-primary');
+                            if (btn.dataset.theme === settings.theme) {
+                                btn.classList.add('ring-2', 'ring-offset-2', 'ring-primary');
+                            }
+                        });
+                    }
+                    
+                    // 恢复其他设置
+                    if (settings.showLegend !== undefined) showLegend.checked = settings.showLegend;
+                    if (settings.showGrid !== undefined) showGrid.checked = settings.showGrid;
+                    if (settings.chartTitle) chartTitle.value = settings.chartTitle;
+                    if (settings.exportFilename) exportFilename.value = settings.exportFilename;
+                    if (settings.exportWidth) exportWidth.value = settings.exportWidth;
+                    if (settings.exportHeight) exportHeight.value = settings.exportHeight;
+                    if (settings.background === 'white') {
+                        bgWhite.checked = true;
+                    } else {
+                        bgTransparent.checked = true;
+                    }
+                }
+            } catch (error) {
+                console.warn('无法加载用户设置:', error);
+            }
+        }
+        
+        // 监听设置变化并自动保存
+        const debouncedSave = debounce(saveUserSettings, 500);
+        [showLegend, showGrid, chartTitle, exportFilename, exportWidth, exportHeight, bgWhite, bgTransparent].forEach(element => {
+            element.addEventListener('change', debouncedSave);
+        });
+        
+        // 页面加载时恢复设置
+        document.addEventListener('DOMContentLoaded', loadUserSettings);
+        
+        // 页面卸载时保存设置
+        window.addEventListener('beforeunload', saveUserSettings);
+        
+        // 性能监控
+        if ('performance' in window) {
+            window.addEventListener('load', () => {
+                setTimeout(() => {
+                    const perfData = performance.getEntriesByType('navigation')[0];
+                    if (perfData && perfData.loadEventEnd - perfData.loadEventStart > 3000) {
+                        console.warn('页面加载时间较长，可能影响用户体验');
+                    }
+                }, 0);
+            });
+        }
+        
+        // 在线状态检测
+        window.addEventListener('online', () => {
+            showNotification('网络', '网络连接已恢复', 'success');
+        });
+        
+        window.addEventListener('offline', () => {
+            showNotification('网络', '网络连接已断开，但本工具可离线使用', 'warning');
+        });
+        
+        // 帮助模态框事件
+        helpBtn.addEventListener('click', () => {
+            helpModal.classList.remove('hidden');
+        });
+        
+        closeHelp.addEventListener('click', () => {
+            helpModal.classList.add('hidden');
+        });
+        
+        closeHelpBtn.addEventListener('click', () => {
+            helpModal.classList.add('hidden');
+        });
+        
+        // 点击模态框外部关闭
+        helpModal.addEventListener('click', (e) => {
+            if (e.target === helpModal) {
+                helpModal.classList.add('hidden');
+            }
         });
     </script>
 </body>
