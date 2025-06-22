@@ -98,6 +98,7 @@ DataViz/
 ├── README.md              # 项目文档
 ├── LICENSE                # 开源许可证
 ├── USAGE_GUIDE.md         # 详细使用指南
+├── TROUBLESHOOTING.md     # 故障排除指南
 ├── sample-data.csv        # 示例数据文件
 └── docs/                  # 文档目录（可选）
     ├── screenshots/       # 截图资源
@@ -152,6 +153,9 @@ A: 确保已经生成了图表，某些导出格式（如SVG、PDF）需要额�
 
 ### Q: 数据预览显示乱码？
 A: 可能是编码问题，建议使用UTF-8编码保存CSV文件。
+
+### Q: 生成图表时出现错误？
+A: 请查看 [故障排除指南](TROUBLESHOOTING.md) 获取详细的解决方案。
 
 ## ✨ 新增功能
 
